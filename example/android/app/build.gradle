@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
+}
+
+// Archivos .env por flavor
+project.ext.envConfigFiles = [
+        developdebug    : ".env.dev",
+        developrelease  : ".env.dev",
+        stagingdebug    : ".env.staging",
+        stagingrelease  : ".env.staging",
+        productiondebug : ".env",
+        productionrelease: ".env",
+]
+
+// Carga el gradle auxiliar del plugin flutter_config
+apply from: project(':flutter_config').projectDir.getPath() + "/dotenv.gradle"
+
+android {
+    namespace "com.example.example"   // ✅ actualizado
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+        coreLibraryDesugaringEnabled true   // ✅ evita error de desugaring
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    defaultConfig {
+        applicationId "com.example.example"   // ✅ consistente con el namespace
+        minSdk flutter.minSdkVersion
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "flavors"
+
+    productFlavors {
+        develop {
+            dimension "flavors"
+        }
+        staging {
+            dimension "flavors"
+        }
+        production {
+            dimension "flavors"
+        }
+    }
+
+    lint {
+        disable 'InvalidPackage'
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+dependencies {
+    // ✅ dependencia necesaria para core library desugaring
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
+}

@@ -1,0 +1,21 @@
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.5.2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'
+    }
+}
+
+def newBuildDir = rootProject.layout.buildDirectory.dir("../../build").get().asFile
+
+subprojects {
+    project.buildDir = new File(newBuildDir, project.name)
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
