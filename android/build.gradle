@@ -25,17 +25,34 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    namespace "com.byneapp.flutter_config"   // ✅ ← agregado (usa el mismo que tu “group”)
+    compileSdkVersion 33                     // ✅ actualizado (29 ya es obsoleto)
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 33                  // ✅ agregado para compatibilidad
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-    defaultConfig {
-        minSdkVersion 16
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
+
     lintOptions {
         disable 'InvalidPackage'
+    }
+
+    buildFeatures {
+        buildConfig true                     // ✅ genera BuildConfig.java (necesario en algunos forks)
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
     }
 }
 
